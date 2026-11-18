@@ -158,7 +158,7 @@ jobs:
             git am --abort || true
             git apply --3way --whitespace=nowarn ../../../patches/$name/*.patch
             git add -A && git commit -m "florida: $name (3way apply)"
-          )
+          ) || echo "WARN: skipping patch set $name (does not apply to this frida version)"
           cd ../..
           echo $i
         done
