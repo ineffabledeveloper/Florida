@@ -153,7 +153,12 @@ jobs:
           real=$(realpath $path)
           echo "Apply patches in $real to frida/subprojects/$name"
           cd subprojects/$name
-          git am ../../../patches/$name/*.patch
+          git am --3way ../../../patches/$name/*.patch || (
+            echo "git am failed -> fallback to git apply --3way"
+            git am --abort || true
+            git apply --3way --whitespace=nowarn ../../../patches/$name/*.patch
+            git add -A && git commit -m "florida: $name (3way apply)"
+          )
           cd ../..
           echo $i
         done
